@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2" last-position="191,525" last-zoom="0.65" max-obj-count="12"
+	 default-schema="public" default-owner="postgres">
+<database name="postgres" encoding="UTF8" lc-collate="en_US.utf8" lc-ctype="en_US.utf8" is-template="false" allow-conns="true">
+	<role name="postgres"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[default administrative connection database]]></comment>
+</database>
+
+<schema name="public" layer="0" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="lavanderia" layer="0" rect-visible="true" fill-color="#517b76">
+	<role name="postgres"/>
+</schema>
+
+<table name="pessoa" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1862" y="1240"/>
+	<column name="cpf" not-null="true">
+		<type name="character varying" length="11"/>
+	</column>
+	<column name="nome">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="sobrenome">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="data_nasc">
+		<type name="date" length="0"/>
+	</column>
+	<column name="id_endereco" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="telefone">
+		<type name="character varying" length="11"/>
+	</column>
+	<column name="email">
+		<type name="character varying" length="255"/>
+	</column>
+	<constraint name="pk_pessoa" type="pk-constr" table="lavanderia.pessoa">
+		<columns names="cpf" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uniq_telefone" type="uq-constr" table="lavanderia.pessoa">
+		<columns names="telefone" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uniq_email" type="uq-constr" table="lavanderia.pessoa">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="endereco" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1401" y="1163"/>
+	<column name="id_endereco" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="rua">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="numero">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="bairro">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="estado">
+		<type name="character varying" length="2"/>
+	</column>
+	<column name="complemento">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="cep">
+		<type name="character varying" length="8"/>
+	</column>
+	<constraint name="pk_endereco" type="pk-constr" table="lavanderia.endereco">
+		<columns names="id_endereco" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="funcionario" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1049" y="1285"/>
+	<column name="matr" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="cpf_funcionario" not-null="true">
+		<type name="character varying" length="11"/>
+	</column>
+	<column name="cargo">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="salario">
+		<type name="real" length="0"/>
+	</column>
+	<constraint name="pk_funcionario" type="pk-constr" table="lavanderia.funcionario">
+		<columns names="matr" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="cliente" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1436" y="936"/>
+	<column name="id_cliente" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="cpf_cliente" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="qnt_servico">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="pk_cliente" type="pk-constr" table="lavanderia.cliente">
+		<columns names="id_cliente" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="cliente_servico" layer="0" collapse-mode="2" max-obj-count="2">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1742" y="889"/>
+	<column name="id_servico" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_cliente" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+</table>
+
+<table name="ordem_servico" layer="0" collapse-mode="2" max-obj-count="7">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1988" y="886"/>
+	<column name="num_os" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_servico" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_cliente" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="matr_funcionario" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="data_servico">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="valor_total">
+		<type name="real" length="0"/>
+	</column>
+	<constraint name="pk_os" type="pk-constr" table="lavanderia.ordem_servico">
+		<columns names="num_os" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="servico" layer="0" collapse-mode="2" max-obj-count="2">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1087" y="1159"/>
+	<column name="id_servico" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="tipo">
+		<type name="character varying" length="255"/>
+	</column>
+	<constraint name="pk_servico" type="pk-constr" table="lavanderia.servico">
+		<columns names="id_servico" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="servico_item" layer="0" collapse-mode="2" max-obj-count="2">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1129" y="959"/>
+	<column name="id_servico" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="id_item" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+</table>
+
+<table name="item" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="lavanderia"/>
+	<role name="postgres"/>
+	<position x="1309" y="1447"/>
+	<column name="id_item" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="categoria">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="peca">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="cor">
+		<type name="character varying" length="6"/>
+	</column>
+	<column name="quantidade">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="valor_uni">
+		<type name="real" length="0"/>
+	</column>
+	<column name="observacoes">
+		<type name="character varying" length="255"/>
+	</column>
+	<constraint name="tom_cor" type="ck-constr" table="lavanderia.item">
+			<expression><![CDATA[((cor)::text = ANY ((ARRAY['escuro'::character varying, 'claro'::character varying])::text[]))]]></expression>
+	</constraint>
+	<constraint name="pk_item" type="pk-constr" table="lavanderia.item">
+		<columns names="id_item" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_endereco_pessoa" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.endereco" table="lavanderia.pessoa">
+	<columns names="id_endereco" ref-type="src-columns"/>
+	<columns names="id_endereco" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_funcionario_cpf" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.pessoa" table="lavanderia.funcionario">
+	<columns names="cpf_funcionario" ref-type="src-columns"/>
+	<columns names="cpf" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cliente_cpf" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.pessoa" table="lavanderia.cliente">
+	<columns names="cpf_cliente" ref-type="src-columns"/>
+	<columns names="cpf" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cli_serv_servico" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.servico" table="lavanderia.cliente_servico">
+	<columns names="id_servico" ref-type="src-columns"/>
+	<columns names="id_servico" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cli_serv_cliente" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.cliente" table="lavanderia.cliente_servico">
+	<columns names="id_cliente" ref-type="src-columns"/>
+	<columns names="id_cliente" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_os_servico" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.servico" table="lavanderia.ordem_servico">
+	<columns names="id_servico" ref-type="src-columns"/>
+	<columns names="id_servico" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_os_cliente" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.cliente" table="lavanderia.ordem_servico">
+	<columns names="id_cliente" ref-type="src-columns"/>
+	<columns names="id_cliente" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_os_funcionario" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.funcionario" table="lavanderia.ordem_servico">
+	<columns names="matr_funcionario" ref-type="src-columns"/>
+	<columns names="matr" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cli_serv_servico" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.servico" table="lavanderia.servico_item">
+	<columns names="id_servico" ref-type="src-columns"/>
+	<columns names="id_servico" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_cli_serv_item" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="lavanderia.item" table="lavanderia.servico_item">
+	<columns names="id_item" ref-type="src-columns"/>
+	<columns names="id_item" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_pessoa_endereco" type="relfk" layer="0"
+	 custom-color="#258559"
+	 src-table="lavanderia.pessoa"
+	 dst-table="lavanderia.endereco" reference-fk="fk_endereco_pessoa"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_funcionario_pessoa" type="relfk" layer="0"
+	 custom-color="#ac8657"
+	 src-table="lavanderia.funcionario"
+	 dst-table="lavanderia.pessoa" reference-fk="fk_funcionario_cpf"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_cliente_pessoa" type="relfk" layer="0"
+	 custom-color="#94555e"
+	 src-table="lavanderia.cliente"
+	 dst-table="lavanderia.pessoa" reference-fk="fk_cliente_cpf"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_cliente_servico_servico" type="relfk" layer="0"
+	 custom-color="#91401c"
+	 src-table="lavanderia.cliente_servico"
+	 dst-table="lavanderia.servico" reference-fk="fk_cli_serv_servico"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_cliente_servico_cliente" type="relfk" layer="0"
+	 custom-color="#2a71a4"
+	 src-table="lavanderia.cliente_servico"
+	 dst-table="lavanderia.cliente" reference-fk="fk_cli_serv_cliente"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_ordem_servico_servico" type="relfk" layer="0"
+	 custom-color="#aa7576"
+	 src-table="lavanderia.ordem_servico"
+	 dst-table="lavanderia.servico" reference-fk="fk_os_servico"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_ordem_servico_cliente" type="relfk" layer="0"
+	 custom-color="#5d5c8a"
+	 src-table="lavanderia.ordem_servico"
+	 dst-table="lavanderia.cliente" reference-fk="fk_os_cliente"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_ordem_servico_funcionario" type="relfk" layer="0"
+	 custom-color="#972ee7"
+	 src-table="lavanderia.ordem_servico"
+	 dst-table="lavanderia.funcionario" reference-fk="fk_os_funcionario"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_servico_item_servico" type="relfk" layer="0"
+	 custom-color="#c5ea4b"
+	 src-table="lavanderia.servico_item"
+	 dst-table="lavanderia.servico" reference-fk="fk_cli_serv_servico"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_servico_item_item" type="relfk" layer="0"
+	 custom-color="#94de43"
+	 src-table="lavanderia.servico_item"
+	 dst-table="lavanderia.item" reference-fk="fk_cli_serv_item"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
