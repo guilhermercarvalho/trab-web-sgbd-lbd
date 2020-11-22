@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavanderia Fantasia</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-light">
+        <a href="#" class="navbar-brand">Lavanderia Fantasia</a>
+        <a class="navbar-link btn-lg" href="{% url 'index' %}">List Data</a>
+        <a href="{% url 'admin:index' %}" class='navbar-link btn-lg'>Admin</a>
+        <a href="{% url 'create-employee' %}" class="navbar-link btn-lg">Adicionar Funcionário</a>
+        <a href="{% url 'create-address' %}" class="navbar-link btn-lg">Adicionar Endereço</a>
+        <a href="{% url 'create-client' %}" class="navbar-link btn-lg">Adicionar Cliente</a>
+        <a href="{% url 'create-service' %}" class="navbar-link btn-lg">Adicionar Serviço</a>
+    </nav>
+    <br>
+    {% block content %}
+    <div class="card-columns">
+        {% for employee in shelf %}
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title">{{ employee.f_name }} {{ employee.l_name }}</h5>
+                <p class="card-text">{{ employee.matr }}</p>
+                <p class="card-text">{{ employee.cpf_ee }}</p>
+                <p class="card-text">{{ employee.birth_date }}</p>
+                <p class="card-text">{{ employee.id_addr }}</p>
+                <p class="card-text">{{ employee.email }}</p>
+                <p class="card-text">{{ employee.phone_number }}</p>
+                <div class="card-footer bg-transparent border-dark">
+                    <p class="card-text">{{ employee.position }}</p>
+                    <p class="card-text">{{ employee.salary }}</p>
+                    <center>
+                        <a href="funcionario/update/{{employee.matr}}" class="btn btn-warning" id='{{employee.matr}}'>editar</a>
+                        <a href="funcionario/delete/{{employee.matr}}" class="btn btn-danger" id='{{employee.matr}}'>deletar</a>
+                    </center>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
+</body>
