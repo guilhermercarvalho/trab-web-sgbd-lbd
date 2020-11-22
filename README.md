@@ -8,8 +8,7 @@ Desenvolver uma aplicação WEB que irá se integrar com um SGBD relacional. O B
 
 ## Tecnologias Utilizadas
 
- 1. Frontend: [Django](https://www.djangoproject.com/)
+ 1. Frontend e Framework ORM: [Django](https://www.djangoproject.com/)
  2. Backend: [Python](https://python.org/)
- 3. Framework ORM: [Sequelize](http://sequelizejs.com)
  4. SGBD: [PostgreSQL](https://www.postgresql.org/)
  
