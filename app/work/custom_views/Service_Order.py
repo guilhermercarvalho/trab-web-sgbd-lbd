@@ -1,55 +1,49 @@
-from django.http.response import HttpResponse
-from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
-from ..forms import Service_OrderCreate
+from ..forms import Service_OrderForm
 from ..models import Service_Order
 
 
-def create_service_order(request):
-    create = Service_OrderCreate()
+@login_required
+def service_order_list(request, template_name='work/service_order_list.html'):
+    service_order = Service_Order.objects.all()
+    data = {}
+    data['object_list'] = service_order
+    return render(request, template_name, data)
+
+
+@login_required
+def service_order_create(request, template_name='work/service_order_form.html'):
+    form_so = Service_OrderForm(request.POST or None)
+    if form_so.is_valid():
+        form_so.save()
+        return redirect('work:service_order_list')
+    return render(request, template_name, {'form': [form_so]})
+
+
+@login_required
+def service_order_update(request, matr, template_name='work/service_order_form.html'):
+    if request.user.is_superuser:
+        service_order = get_object_or_404(Service_Order, matr=matr)
+    else:
+        return redirect('work:service_order_list')
+
+    form_so = Service_OrderForm(request.POST or None, instance=service_order)
+
+    if form_so.is_valid():
+        form_so.save()
+        return redirect('work:service_order_list')
+    return render(request, template_name, {'form': [form_so]})
+
+
+@login_required
+def service_order_delete(request, matr, template_name='work/service_order_confirm_delete.html'):
+    if request.user.is_superuser:
+        service_order = get_object_or_404(Service_Order, matr=matr)
+    else:
+        return redirect('work:service_order_list')
     if request.method == 'POST':
-        create = Service_OrderCreate(request.POST,
-                                request.FILES)
-
-        if create.is_valid():
-            create.save()
-            return redirect('index')
-        else:
-            return HttpResponse("""seu formulário está errado, tente novamente em \<a href = "{{url: 'index'}}">recarregar</a>""")
-
-    return render(request,
-                  'work/create_form.html',
-                  {
-                      'create_form': create,
-                      'model': 'Ordem de Serviço'
-                  })
-
-
-def update_service_order(request, service_order_id):
-    service_order_id: int(service_order_id)
-    try:
-        service_order_sel = Service_Order.objects.get(num_os=service_order_id)
-    except Service_Order.DoesNotExist:
-        return redirect('index')
-
-    service_order_form = Service_OrderCreate(request.POST or None,
-                                   instance=service_order_sel)
-
-    if service_order_form.is_valid():
-        service_order_form.save()
-        return redirect('index')
-    return render(request, 'work/create_form.html',
-                  {
-                      'create_form': service_order_form,
-                      'model': 'Ordem de Serviço'
-                  })
-
-
-def delete_service_order(request, service_order_id):
-    service_order_id = int(service_order_id)
-    try:
-        service_order_sel = Service_Order.objects.get(num_os=service_order_id)
-    except Service_Order.DoesNotExist:
-        return redirect('index')
-    service_order_sel.delete()
-    return redirect('index')
+        Service_Order.delete()
+        return redirect('work:service_order_list')
+    return render(request, template_name, {'object': service_order})

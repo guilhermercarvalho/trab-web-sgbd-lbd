@@ -1,32 +1,40 @@
-from django import forms
-from .models import Address, Client, Employee, Item, Service, Service_Order
+from django.db.models import fields
+from django.forms import ModelForm
+from .models import Client, Client_Service, Employee, Item, Service, Service_Order, Service_Item
 
-class EmployeeCreate(forms.ModelForm):
+class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__' 
+        exclude = ('user',)
 
-class AddressCreate(forms.ModelForm):
-    class Meta:
-        model = Address
-        fields = '__all__'
-
-class ClientCreate(forms.ModelForm):
+class ClientForm(ModelForm):
     class Meta:
         model = Client
         fields = '__all__'
+        exclude = ('user', 'qty_ser',)
 
-class ServiceCreate(forms.ModelForm):
+class ServiceForm(ModelForm):
     class Meta:
         model = Service
         fields = '__all__'
 
-class ItemCreate(forms.ModelForm):
+class ItemForm(ModelForm):
     class Meta:
         model = Item
         fields = '__all__'
 
-class Service_OrderCreate(forms.ModelForm):
+class Service_OrderForm(ModelForm):
     class Meta:
         model = Service_Order
+        fields = '__all__'
+
+class Service_ItemForm(ModelForm):
+    class Meta:
+        model = Service_Item
+        fields = '__all__'
+
+class Client_ServiceForm(ModelForm):
+    class Meta:
+        model = Client_Service
         fields = '__all__'

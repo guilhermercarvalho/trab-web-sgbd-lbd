@@ -1,55 +1,50 @@
-from django.http.response import HttpResponse
-from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
-from ..forms import ServiceCreate
+from ..forms import ServiceForm
 from ..models import Service
 
 
-def create_service(request):
-    create = ServiceCreate()
+@login_required
+def service_list(request, template_name='work/service_list.html'):
+    service = Service.objects.all()
+    data = {}
+    data['object_list'] = service
+    return render(request, template_name, data)
+
+
+@login_required
+def service_create(request, template_name='work/service_form.html'):
+    form_cli = ServiceForm(request.POST or None)
+    if form_cli.is_valid():
+        service = form_cli.save(commit=False)
+        service.save()
+        return redirect('work:service_list')
+    return render(request, template_name, {'form': [form_cli]})
+
+
+@login_required
+def service_update(request, matr, template_name='work/service_form.html'):
+    if request.user.is_superuser:
+        service = get_object_or_404(Service, matr=matr)
+    else:
+        return redirect('work:service_list')
+
+    form_cli = ServiceForm(request.POST or None, instance=service)
+
+    if form_cli.is_valid():
+        form_cli.save()
+        return redirect('work:service_list')
+    return render(request, template_name, {'form': [form_cli]})
+
+
+@login_required
+def service_delete(request, matr, template_name='work/service_confirm_delete.html'):
+    if request.user.is_superuser:
+        service = get_object_or_404(Service, matr=matr)
+    else:
+        return redirect('work:service_list')
     if request.method == 'POST':
-        create = ServiceCreate(request.POST,
-                                request.FILES)
-
-        if create.is_valid():
-            create.save()
-            return redirect('index')
-        else:
-            return HttpResponse("""seu formulário está errado, tente novamente em \<a href = "{{url: 'index'}}">recarregar</a>""")
-
-    return render(request,
-                  'work/create_form.html',
-                  {
-                      'create_form': create,
-                      'model': 'Serviço'
-                  })
-
-
-def update_service(request, service_id):
-    service_id: int(service_id)
-    try:
-        service_sel = Service.objects.get(id_ser=service_id)
-    except Service.DoesNotExist:
-        return redirect('index')
-
-    service_form = ServiceCreate(request.POST or None,
-                                   instance=service_sel)
-
-    if service_form.is_valid():
-        service_form.save()
-        return redirect('index')
-    return render(request, 'work/create_form.html',
-                  {
-                      'create_form': service_form,
-                      'model': 'Serviço'
-                  })
-
-
-def delete_service(request, service_id):
-    service_id = int(service_id)
-    try:
-        service_sel = Service.objects.get(id_ser=service_id)
-    except Service.DoesNotExist:
-        return redirect('index')
-    service_sel.delete()
-    return redirect('index')
+        Service.delete()
+        return redirect('work:service_list')
+    return render(request, template_name, {'object': service})

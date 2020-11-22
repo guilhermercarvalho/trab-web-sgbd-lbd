@@ -1,55 +1,49 @@
-from django.http.response import HttpResponse
-from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
-from ..forms import ItemCreate
-from ..models import Item
+from ..forms import ItemForm, Service_ItemForm
+from ..models import Item, Service_Item
 
 
-def create_item(request):
-    create = ItemCreate()
+@login_required
+def item_list(request, template_name='work/item_list.html'):
+    item = Item.objects.all()
+    data = {}
+    data['object_list'] = item
+    return render(request, template_name, data)
+
+
+@login_required
+def item_create(request, template_name='work/item_form.html'):
+    form_item = ItemForm(request.POST or None)
+    if form_item.is_valid():
+        form_item.save()
+        return redirect('work:item_list')
+    return render(request, template_name, {'form': [form_item]})
+
+
+@login_required
+def item_update(request, matr, template_name='work/item_form.html'):
+    if request.user.is_superuser:
+        item = get_object_or_404(Item, matr=matr)
+    else:
+        return redirect('work:item_list')
+
+    form_item = ItemForm(request.POST or None, instance=item)
+
+    if form_item.is_valid():
+        form_item.save()
+        return redirect('work:item_list')
+    return render(request, template_name, {'form': [form_item]})
+
+
+@login_required
+def item_delete(request, matr, template_name='work/item_confirm_delete.html'):
+    if request.user.is_superuser:
+        item = get_object_or_404(Item, matr=matr)
+    else:
+        return redirect('work:item_list')
     if request.method == 'POST':
-        create = ItemCreate(request.POST,
-                                request.FILES)
-
-        if create.is_valid():
-            create.save()
-            return redirect('index')
-        else:
-            return HttpResponse("""seu formulário está errado, tente novamente em \<a href = "{{url: 'index'}}">recarregar</a>""")
-
-    return render(request,
-                  'work/create_form.html',
-                  {
-                      'create_form': create,
-                      'model': 'Item'
-                  })
-
-
-def update_item(request, item_id):
-    item_id: int(item_id)
-    try:
-        item_sel = Item.objects.get(id_item=item_id)
-    except Item.DoesNotExist:
-        return redirect('index')
-
-    item_form = ItemCreate(request.POST or None,
-                                   instance=item_sel)
-
-    if item_form.is_valid():
-        item_form.save()
-        return redirect('index')
-    return render(request, 'work/create_form.html',
-                  {
-                      'create_form': item_form,
-                      'model': 'Item'
-                  })
-
-
-def delete_item(request, item_id):
-    item_id = int(item_id)
-    try:
-        item_sel = Item.objects.get(id_item=item_id)
-    except Item.DoesNotExist:
-        return redirect('index')
-    item_sel.delete()
-    return redirect('index')
+        Item.delete()
+        return redirect('work:item_list')
+    return render(request, template_name, {'object': item})

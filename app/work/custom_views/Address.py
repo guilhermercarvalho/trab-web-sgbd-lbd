@@ -1,29 +1,16 @@
+from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 
-from ..forms import AddressCreate
+from ..forms import AddressForm
 from ..models import Address
 
-
+@login_required
 def create_address(request):
-    create = AddressCreate()
-    if request.method == 'POST':
-        create = AddressCreate(request.POST,
-                               request.FILES)
-
-        if create.is_valid():
-            create.save()
-            return redirect('index')
-        else:
-            return HttpResponse("""seu formulário está errado, tente novamente em \<a href = "{{url: 'index'}}">recarregar</a>""")
-
-    return render(request,
-                  'work/create_form.html',
-                  {
-                      'create_form': create,
-                      'model': 'Endereço',
-                  })
-
+    form_addr = AddressForm(request.POST or None)
+    if form_addr.is_valid():
+        address = form_addr.save()
+        return address.id_addr
 
 def update_address(request, address_id):
     address_id: int(address_id)
@@ -32,7 +19,7 @@ def update_address(request, address_id):
     except Address.DoesNotExist:
         return redirect('index')
 
-    address_form = AddressCreate(request.POST or None,
+    address_form = AddressForm(request.POST or None,
                                  instance=address_sel)
 
     if address_form.is_valid():

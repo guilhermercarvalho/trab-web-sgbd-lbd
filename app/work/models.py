@@ -1,58 +1,59 @@
-from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
+from django.conf import settings
 
-class User(AbstractUser):
-    pass
+# class Address(models.Model):
+#     UF_STATES = (
+#         ('AC', 'Acre'),
+#         ('AL', 'Alagoas'),
+#         ('AP', 'Amapá'),
+#         ('AM', 'Amazonas'),
+#         ('BA', 'Bahia'),
+#         ('CE', 'Ceará'),
+#         ('DF', 'Distrito Federal'),
+#         ('ES', 'Espírito Santo'),
+#         ('GO', 'Goiás'),
+#         ('MA', 'Maranhão'),
+#         ('MT', 'Mato Grosso'),
+#         ('MS', 'Mato Grosso do Sul'),
+#         ('MG', 'Minas Gerais'),
+#         ('PA', 'Pará'),
+#         ('PB', 'Paraíba'),
+#         ('PR', 'Paraná'),
+#         ('PE', 'Pernambuco'),
+#         ('PI', 'Piauí'),
+#         ('RJ', 'Rio de Janeiro'),
+#         ('RN', 'Rio Grande do Norte'),
+#         ('RS', 'Rio Grande do Sul'),
+#         ('RO', 'Rondônia'),
+#         ('RR', 'Roraima'),
+#         ('SC', 'Santa Catarina'),
+#         ('SP', 'São Paulo'),
+#         ('SE', 'Sergipe'),
+#         ('TO', 'Tocantins')
+#     )
 
-class Address(models.Model):
-    UF_STATES = (
-        ('AC', 'Acre'),
-        ('AL', 'Alagoas'),
-        ('AP', 'Amapá'),
-        ('AM', 'Amazonas'),
-        ('BA', 'Bahia'),
-        ('CE', 'Ceará'),
-        ('DF', 'Distrito Federal'),
-        ('ES', 'Espírito Santo'),
-        ('GO', 'Goiás'),
-        ('MA', 'Maranhão'),
-        ('MT', 'Mato Grosso'),
-        ('MS', 'Mato Grosso do Sul'),
-        ('MG', 'Minas Gerais'),
-        ('PA', 'Pará'),
-        ('PB', 'Paraíba'),
-        ('PR', 'Paraná'),
-        ('PE', 'Pernambuco'),
-        ('PI', 'Piauí'),
-        ('RJ', 'Rio de Janeiro'),
-        ('RN', 'Rio Grande do Norte'),
-        ('RS', 'Rio Grande do Sul'),
-        ('RO', 'Rondônia'),
-        ('RR', 'Roraima'),
-        ('SC', 'Santa Catarina'),
-        ('SP', 'São Paulo'),
-        ('SE', 'Sergipe'),
-        ('TO', 'Tocantins')
-    )
+#     id_addr = models.AutoField(primary_key=True)
+#     street = models.CharField("Rua", max_length=255)
+#     st_number = models.IntegerField("Número")
+#     nbhd = models.CharField("Bairro", max_length=255)
+#     state = models.CharField("Estado", max_length=2, choices=UF_STATES)
+#     complement = models.CharField("Complemento", max_length=255, blank=True)
+#     cep = models.CharField("CEP", max_length=8)
 
-    id_addr = models.AutoField(primary_key=True)
-    street = models.CharField("Rua", max_length=255)
-    st_number = models.IntegerField("Número")
-    nbhd = models.CharField("Bairro", max_length=255)
-    state = models.CharField("Estado", max_length=2, choices=UF_STATES)
-    complement = models.CharField("Complemento", max_length=255)
-    cep = models.CharField("CEP", max_length=8)
+#     def __str__(self):
+#         return f"{self.street}, {self.st_number}"
 
-    def __str__(self):
-        return f"{self.street}, {self.st_number}"
 
 class Employee(models.Model):
     matr = models.AutoField("Matrícula", primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     cpf_ee = models.CharField("CPF funcionário", max_length=11, unique=True)
     f_name = models.CharField("Nome", max_length=255)
     l_name = models.CharField("Sobrenome", max_length=255)
     birth_date = models.DateField("Data de nascimento")
-    id_addr = models.ForeignKey('Address', null=True, verbose_name="Endereço", on_delete=models.SET_NULL)
+    address = models.CharField("Endereço", max_length=255)
     email = models.EmailField("Email")
     phone_number = models.CharField("Telefone", max_length=11)
     position = models.CharField("Cargo", max_length=255)
@@ -61,14 +62,17 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.matr} {self.cpf_ee} {self.f_name}"
 
+    def get_absolute_url(self):
+        return reverse('work:employee_edit', kwargs={'matr': self.matr})
 
 class Client(models.Model):
     id_cli = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     cpf_cli = models.CharField("CPF cliente", max_length=255, unique=True)
     f_name = models.CharField("Nome", max_length=255)
     l_name = models.CharField("Sobrenome", max_length=255)
     birth_date = models.DateField("Data de nascimento")
-    id_addr = models.ForeignKey('Address', null=True, on_delete=models.SET_NULL)
+    address = models.CharField("Endereço", max_length=255)
     email = models.EmailField("Email")
     phone_number = models.CharField("Telefone", max_length=11, unique=True)
     qty_ser = models.IntegerField("Quantidade de serviços Solicitados")

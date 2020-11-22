@@ -1,55 +1,48 @@
-from django.http.response import HttpResponse
-from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
-from ..forms import ClientCreate
+from ..forms import ClientForm
 from ..models import Client
 
-
-def create_client(request):
-    create = ClientCreate()
-    if request.method == 'POST':
-        create = ClientCreate(request.POST,
-                                request.FILES)
-
-        if create.is_valid():
-            create.save()
-            return redirect('index')
-        else:
-            return HttpResponse("""seu formulário está errado, tente novamente em \<a href = "{{url: 'index'}}">recarregar</a>""")
-
-    return render(request,
-                  'work/create_form.html',
-                  {
-                      'create_form': create,
-                      'model': 'Cliente'
-                  })
+@login_required
+def client_list(request, template_name='work/client_list.html'):
+    client = Client.objects.all()
+    data = {}
+    data['object_list'] = client
+    return render(request, template_name, data)
 
 
-def update_client(request, client_id):
-    client_id: int(client_id)
-    try:
-        client_sel = Client.objects.get(id_cli=client_id)
-    except Client.DoesNotExist:
-        return redirect('index')
+@login_required
+def client_create(request, template_name='work/client_form.html'):
+    form_cli = ClientForm(request.POST or None)
+    if form_cli.is_valid():
+        client = form_cli.save(commit=False)
+        client.user = request.user
+        client.save()
+        return redirect('work:client_list')
+    return render(request, template_name, {'form': [form_cli]})
 
-    client_form = ClientCreate(request.POST or None,
-                                   instance=client_sel)
+@login_required
+def client_update(request, matr, template_name='work/client_form.html'): 
+    if request.user.is_superuser:
+        client = get_object_or_404(Client, matr=matr)
+    else:
+        return redirect('work:client_list')
+    
+    form_cli = ClientForm(request.POST or None, instance=client)
+    
+    if form_cli.is_valid():
+        form_cli.save()
+        return redirect('work:client_list')
+    return render(request, template_name, {'form': [form_cli]})
 
-    if client_form.is_valid():
-        client_form.save()
-        return redirect('index')
-    return render(request, 'work/create_form.html',
-                  {
-                      'create_form': client_form,
-                      'model': 'Cliente'
-                  })
-
-
-def delete_client(request, client_id):
-    client_id = int(client_id)
-    try:
-        client_sel = Client.objects.get(id_cli=client_id)
-    except Client.DoesNotExist:
-        return redirect('index')
-    client_sel.delete()
-    return redirect('index')
+@login_required
+def client_delete(request, matr, template_name='work/client_confirm_delete.html'):
+    if request.user.is_superuser:
+        client = get_object_or_404(Client, matr=matr)
+    else:
+        return redirect('work:client_list')
+    if request.method=='POST':
+        Client.delete()
+        return redirect('work:client_list')
+    return render(request, template_name, {'object':client})

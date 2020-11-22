@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2><a href="{% url 'work:service_order_list' %}">Ordens de Serviço</a>: Editar</h2>
+
+<form method="post">{% csrf_token %}
+    {% for f in form %}
+        {{ f.as_p }}
+    {% endfor %}
+    <input type="submit" value="Submit" />
+</form>
+
+{% endblock %}

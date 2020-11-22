@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2><a href="{% url 'work:service_list' %}">Serviços</a></h2>
+
+<ul>
+    {% for ee in object_list %}
+    <li>{{ ee }}
+        <a href="{% url 'work:service_edit' ee.matr %}">editar</a>
+        <a href="{% url 'work:service_delete' ee.matr %}">deletar</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'work:service_new' %}">Adicionar</a>
+
+{% endblock %}

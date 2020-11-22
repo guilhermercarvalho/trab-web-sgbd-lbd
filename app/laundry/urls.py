@@ -17,7 +17,12 @@ from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
 
+import theme.views
+
 urlpatterns = [
+    path('', theme.views.home),
+    path('lavanderia/', include('work.urls')),
+
+    path('accounts/', include('django.contrib.auth.urls')),    
     path('admin/', admin.site.urls),
-    path('', include('work.urls'))
 ]

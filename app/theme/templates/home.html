@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="{% url 'work:employee_list' %}">Listar Funcionários</a><br>    
+<a href="{% url 'work:client_list' %}">Listar Clientes</a><br>
+<a href="{% url 'work:service_list' %}">Listar Serviços</a><br>
+<a href="{% url 'work:item_list' %}">Listar Itens</a><br>
+<a href="{% url 'work:service_item_list' %}">Listar Itens do Serviço</a><br>
+<a href="{% url 'work:client_service_list' %}">Listar Serviços do Clinte</a><br>
+<a href="{% url 'work:service_order_list' %}">Listar Ordens de Serviço</a><br>
+
+{% endblock %}
