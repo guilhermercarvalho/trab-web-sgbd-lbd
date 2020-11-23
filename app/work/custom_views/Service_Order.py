@@ -23,9 +23,9 @@ def service_order_create(request, template_name='work/service_order_form.html'):
 
 
 @login_required
-def service_order_update(request, matr, template_name='work/service_order_form.html'):
+def service_order_update(request, num_so, template_name='work/service_order_form.html'):
     if request.user.is_superuser:
-        service_order = get_object_or_404(Service_Order, matr=matr)
+        service_order = get_object_or_404(Service_Order, num_so=num_so)
     else:
         return redirect('work:service_order_list')
 
@@ -38,12 +38,9 @@ def service_order_update(request, matr, template_name='work/service_order_form.h
 
 
 @login_required
-def service_order_delete(request, matr, template_name='work/service_order_confirm_delete.html'):
-    if request.user.is_superuser:
-        service_order = get_object_or_404(Service_Order, matr=matr)
-    else:
-        return redirect('work:service_order_list')
+def service_order_delete(request, num_so, template_name='work/service_order_list.html'):
+    service_order = get_object_or_404(Service_Order, num_so=num_so)
     if request.method == 'POST':
-        Service_Order.delete()
+        service_order.delete()
         return redirect('work:service_order_list')
     return render(request, template_name, {'object': service_order})

@@ -23,9 +23,9 @@ def item_create(request, template_name='work/item_form.html'):
 
 
 @login_required
-def item_update(request, matr, template_name='work/item_form.html'):
+def item_update(request, id_item, template_name='work/item_form.html'):
     if request.user.is_superuser:
-        item = get_object_or_404(Item, matr=matr)
+        item = get_object_or_404(Item, id_item=id_item)
     else:
         return redirect('work:item_list')
 
@@ -38,12 +38,9 @@ def item_update(request, matr, template_name='work/item_form.html'):
 
 
 @login_required
-def item_delete(request, matr, template_name='work/item_confirm_delete.html'):
-    if request.user.is_superuser:
-        item = get_object_or_404(Item, matr=matr)
-    else:
-        return redirect('work:item_list')
+def item_delete(request, id_item, template_name='work/item_list.html'):
+    item = get_object_or_404(Item, id_item=id_item)
     if request.method == 'POST':
-        Item.delete()
+        item.delete()
         return redirect('work:item_list')
     return render(request, template_name, {'object': item})

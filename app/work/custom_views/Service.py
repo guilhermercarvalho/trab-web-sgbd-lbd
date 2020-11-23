@@ -24,9 +24,9 @@ def service_create(request, template_name='work/service_form.html'):
 
 
 @login_required
-def service_update(request, matr, template_name='work/service_form.html'):
+def service_update(request, id_ser, template_name='work/service_form.html'):
     if request.user.is_superuser:
-        service = get_object_or_404(Service, matr=matr)
+        service = get_object_or_404(Service, id_ser=id_ser)
     else:
         return redirect('work:service_list')
 
@@ -39,12 +39,9 @@ def service_update(request, matr, template_name='work/service_form.html'):
 
 
 @login_required
-def service_delete(request, matr, template_name='work/service_confirm_delete.html'):
-    if request.user.is_superuser:
-        service = get_object_or_404(Service, matr=matr)
-    else:
-        return redirect('work:service_list')
+def service_delete(request, id_ser, template_name='work/service_list.html'):
+    service = get_object_or_404(Service, id_ser=id_ser)
     if request.method == 'POST':
-        Service.delete()
+        service.delete()
         return redirect('work:service_list')
     return render(request, template_name, {'object': service})

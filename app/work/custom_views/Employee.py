@@ -40,11 +40,9 @@ def employee_update(request, matr, template_name='work/employee_form.html'):
     return render(request, template_name, {'form': [form_ee]})
 
 @login_required
-def employee_delete(request, matr, template_name='work/employee_confirm_delete.html'):
-    if request.user.is_superuser:
-        employee = get_object_or_404(Employee, matr=matr)
-    else:
-        employee = get_object_or_404(Employee, matr=matr, user=request.user)
+def employee_delete(request, matr, template_name='work/employee_list.html'):
+    employee = get_object_or_404(Employee, matr=matr)
+    print(request.method)
     if request.method=='POST':
         employee.delete()
         return redirect('work:employee_list')

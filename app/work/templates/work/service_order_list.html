@@ -7,8 +7,12 @@
 <ul>
     {% for ee in object_list %}
     <li>{{ ee }}
-        <a href="{% url 'work:service_order_edit' ee.matr %}">editar</a>
-        <a href="{% url 'work:service_order_delete' ee.matr %}">deletar</a>
+        <form action="{% url 'work:service_order_edit' ee.num_so %}" method="get">
+            <button type="submit">Editar</button>
+        </form>
+        <form action="{% url 'work:service_order_delete' ee.num_so %}" method="post">{% csrf_token %}
+            <button type="submit">Deletar</button>
+        </form>
     </li>
     {% endfor %}
 </ul>

@@ -23,9 +23,9 @@ def client_service_create(request, template_name='work/client_service_form.html'
 
 
 @login_required
-def client_service_update(request, matr, template_name='work/client_service_form.html'):
+def client_service_update(request, pk, template_name='work/client_service_form.html'):
     if request.user.is_superuser:
-        client_service = get_object_or_404(Client_Service, matr=matr)
+        client_service = get_object_or_404(Client_Service, pk=pk)
     else:
         return redirect('work:client_service_list')
 
@@ -38,12 +38,9 @@ def client_service_update(request, matr, template_name='work/client_service_form
 
 
 @login_required
-def client_service_delete(request, matr, template_name='work/client_service_confirm_delete.html'):
-    if request.user.is_superuser:
-        client_service = get_object_or_404(Client_Service, matr=matr)
-    else:
-        return redirect('work:client_service_list')
+def client_service_delete(request, pk, template_name='work/client_service_list.html'):
+    client_service = get_object_or_404(Client_Service, pk=pk)
     if request.method == 'POST':
-        Client_Service.delete()
+        client_service.delete()
         return redirect('work:client_service_list')
     return render(request, template_name, {'object': client_service})

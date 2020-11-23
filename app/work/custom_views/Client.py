@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from ..forms import ClientForm
 from ..models import Client
 
+
 @login_required
 def client_list(request, template_name='work/client_list.html'):
     client = Client.objects.all()
@@ -22,27 +23,26 @@ def client_create(request, template_name='work/client_form.html'):
         return redirect('work:client_list')
     return render(request, template_name, {'form': [form_cli]})
 
+
 @login_required
-def client_update(request, matr, template_name='work/client_form.html'): 
+def client_update(request, id_cli, template_name='work/client_form.html'):
     if request.user.is_superuser:
-        client = get_object_or_404(Client, matr=matr)
+        client = get_object_or_404(Client, id_cli=id_cli)
     else:
         return redirect('work:client_list')
-    
+
     form_cli = ClientForm(request.POST or None, instance=client)
-    
+
     if form_cli.is_valid():
         form_cli.save()
         return redirect('work:client_list')
     return render(request, template_name, {'form': [form_cli]})
 
+
 @login_required
-def client_delete(request, matr, template_name='work/client_confirm_delete.html'):
-    if request.user.is_superuser:
-        client = get_object_or_404(Client, matr=matr)
-    else:
-        return redirect('work:client_list')
+def client_delete(request, id_cli, template_name='work/client_list.html'):
+    client = get_object_or_404(Client, id_cli=id_cli)
     if request.method=='POST':
-        Client.delete()
+        client.delete()
         return redirect('work:client_list')
     return render(request, template_name, {'object':client})
